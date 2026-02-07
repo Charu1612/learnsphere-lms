@@ -1,0 +1,518 @@
+LearnSphere — Full eLearning SaaS Platform
+
+React Frontend + Python (FastAPI) Backend + Supabase
+
+SYSTEM ROLE (VERY IMPORTANT)
+
+You are acting as a senior full-stack SaaS architect, UX designer, and security engineer combined.
+
+You must:
+
+Think step-by-step
+
+Explain structure through code
+
+Avoid assumptions
+
+Avoid shortcuts
+
+Avoid skipping logic
+
+Build like this is a real startup product, not a demo
+
+Every feature must feel:
+
+Predictable
+
+Calm
+
+Secure
+
+Human-friendly
+
+1. TECHNOLOGY STACK (FIXED — DO NOT CHANGE)
+
+Frontend: React (Vite)
+
+Routing: React Router v6+
+
+Backend: Python with FastAPI
+
+Database & Auth: Supabase
+
+Styling: Clean UI with generous spacing (Tailwind or CSS)
+
+State Management: React Context (no Redux)
+
+2. CORE PRODUCT PHILOSOPHY (DO NOT IGNORE)
+
+LearnSphere is a PUBLIC PLATFORM FIRST.
+
+This means:
+
+Users can explore without logging in
+
+Login is only required when the user wants to act
+
+Authentication is a firewall, not a wall
+
+Strict rules
+
+❌ Never redirect to login on first load
+❌ Never auto-open login/signup
+❌ Never block public pages
+❌ Never show blank screens
+
+✅ Always allow browsing
+✅ Only protect sensitive actions
+
+3. USER ROLES (VERY CLEAR)
+
+There are three roles:
+
+1️⃣ Learner (Default user)
+
+Browses courses
+
+Enrolls in courses
+
+Watches lessons
+
+Takes quizzes
+
+Tracks progress
+
+2️⃣ Instructor
+
+Creates courses
+
+Creates lessons
+
+Creates quizzes
+
+Publishes courses
+
+Views enrolled students
+
+3️⃣ Admin
+
+Manages users
+
+Manages instructors
+
+Moderates courses
+
+Platform-level control
+
+Roles must be stored in Supabase and respected everywhere.
+
+4. GLOBAL APP STRUCTURE (MANDATORY)
+
+The React app root must be wrapped in this exact order:
+
+ThemeProvider
+
+AuthProvider
+
+Router
+
+Navbar (always visible)
+
+MainContentWrapper
+
+Footer
+
+No deviation allowed.
+
+5. MAIN CONTENT WRAPPER (ANTI-CRAMP RULE)
+
+Create a reusable MainContentWrapper component.
+
+Rules:
+
+Max width: 1200px
+
+Centered horizontally
+
+Padding:
+
+Desktop: 32px
+
+Tablet: 24px
+
+Mobile: 16px
+
+Vertical layout only
+
+No absolute positioning
+
+Every page must use this wrapper.
+
+6. NAVBAR (ALWAYS STABLE)
+
+Navbar must:
+
+Be sticky
+
+Never disappear
+
+Never change height
+
+Never cause layout shift
+
+Navbar layout
+
+Left
+
+LearnSphere logo → Landing page
+
+Center
+
+Courses link
+
+Right
+
+Theme toggle
+
+Auth area
+
+Auth states:
+
+Guest → Login | Sign Up
+
+Logged in → Avatar → My Courses | Logout
+
+7. THEME SYSTEM (REAL, NOT FAKE)
+
+Light mode default
+
+Dark mode toggle in navbar
+
+Stored in localStorage
+
+Instant apply
+
+Theme must control:
+
+Background
+
+Cards
+
+Text
+
+Borders
+
+Inputs
+
+Buttons
+
+Hover
+
+Disabled states
+
+Dark mode must be soft, not harsh.
+
+8. AUTH SYSTEM (SUPABASE)
+
+AuthContext must manage:
+
+user
+
+role
+
+loading
+
+error
+
+Rules:
+
+Auth initializes silently
+
+Never block landing page
+
+No full-screen loaders
+
+Inline loaders only
+
+9. FIREWALL LOGIN LOGIC
+Public routes
+
+/
+
+/courses
+
+/courses/:id
+
+/login
+
+/signup
+
+Protected routes
+
+/my-courses
+
+/learn/*
+
+/instructor/*
+
+/admin/*
+
+If guest accesses protected route:
+
+Redirect to login
+
+Save intended URL
+
+Redirect back after login
+
+10. AUTH PAGES
+Login Page
+
+Centered card
+
+Max width 420–450px
+
+Email + Password
+
+Inline errors
+
+Human-readable messages
+
+Signup Page
+
+Full name
+
+Email
+
+Password
+
+Confirm password
+
+Validation
+
+Redirect to My Courses on success
+
+11. LANDING PAGE (PUBLIC)
+
+Sections:
+
+Hero (headline + description)
+
+CTA: Browse Courses
+
+CTA: Sign Up
+
+Course preview grid
+
+Footer
+
+Must feel complete for guests.
+
+12. COURSE SYSTEM (CORE FEATURE)
+Course fields
+
+Title
+
+Short description
+
+Full description
+
+Image
+
+Tags
+
+Visibility (public / signed-in)
+
+Access (free / paid)
+
+Price
+
+Published status
+
+Instructor ID
+
+Only published courses appear publicly.
+
+13. COURSES LIST PAGE (/courses)
+
+Public page.
+
+Each course card shows:
+
+Image
+
+Title
+
+Short description
+
+Tags
+
+CTA button
+
+CTA logic:
+
+Guest → View
+
+Learner (not enrolled) → Start
+
+Learner (enrolled) → Continue
+
+Instructor/Admin → Manage
+
+14. COURSE DETAIL PAGE (/courses/:id)
+
+Tabs:
+
+Overview
+
+Lessons
+
+Reviews (read-only)
+
+Overview:
+
+Full description
+
+Instructor info
+
+Lesson count
+
+Estimated time
+
+Progress bar (if enrolled)
+
+Lessons tab:
+
+Lesson list
+
+Status icons:
+
+Locked
+
+In progress
+
+Completed ✔
+
+15. MY COURSES PAGE (/my-courses)
+
+Protected.
+
+Shows:
+
+User info
+
+Course cards
+
+Progress bar
+
+Continue button
+
+Completed state
+
+Search by course name.
+
+16. LESSON PLAYER (/learn/:courseId/:lessonId)
+
+Full-screen focused layout.
+
+Lesson types:
+
+Video
+
+Document
+
+Image
+
+Quiz
+
+Features:
+
+Next / Previous navigation
+
+Progress auto-save
+
+Mark completed
+
+Resume from last lesson
+
+17. QUIZ SYSTEM
+
+Quiz features:
+
+MCQs
+
+Single correct answer
+
+Timer (optional)
+
+Score calculation
+
+Pass/fail status
+
+Retry option
+
+Quiz must block skipping until submitted.
+
+18. INSTRUCTOR DASHBOARD (/instructor)
+
+Instructor can:
+
+Create courses
+
+Edit courses
+
+Add lessons
+
+Reorder lessons
+
+Add quizzes
+
+Publish/unpublish courses
+
+View enrolled students
+
+Instructor must NEVER access admin tools.
+
+19. ADMIN PANEL (/admin)
+
+Admin can:
+
+View all users
+
+Assign instructor role
+
+Remove instructor role
+
+View all courses
+
+Disable courses
+
+Moderate content
+
+Admin dashboard must be role-protected.
+
+20. BACKEND (FASTAPI)
+
+Backend must:
+
+Handle secure APIs
+
+Validate role permissions
+
+Communicate with Supabase
+
+Never trust frontend blindly
+
+21. NON-NEGOTIABLE RULES (FINAL)
+
+No skipped features
+
+No assumed data
+
+No rushed UI
+
+No hardcoded hacks
+
+No auth abuse
+
+Clean UX always
