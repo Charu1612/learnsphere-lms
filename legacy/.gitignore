@@ -1,0 +1,8 @@
+node_modules/
+.pythonlibs/
+__pycache__/
+*.pyc
+dist/
+.env
+.vite/
+*.log
