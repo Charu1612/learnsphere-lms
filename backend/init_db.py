@@ -5,7 +5,21 @@ import bcrypt
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def init_db():
-    conn = psycopg2.connect(DATABASE_URL)
+    # Always use Supabase direct connection
+    conn = None
+    try:
+        conn = psycopg2.connect(
+            host="db.aqrlbobkgsrklyyuvcuf.supabase.co",
+            port=5432,
+            user="postgres",
+            password="LMk#6/U6KT98pFi",
+            database="postgres"
+        )
+    except Exception as e:
+        print(f"❌ Connection error: {e}")
+        print("⚠️  Network cannot reach Supabase server")
+        print("📋 Check if you need to whitelist your IP in Supabase settings")
+        raise
     cur = conn.cursor()
     
     cur.execute("""

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Eye, EyeOff, Users, BookOpen, List, ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, Users, BookOpen, List, ChevronDown, ChevronUp, HelpCircle, MessageSquare } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function InstructorDashboard() {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -131,9 +133,14 @@ export default function InstructorDashboard() {
     <div>
       <div className="flex-between mb-6">
         <h1 className="section-title" style={{ margin: 0 }}>Instructor Dashboard</h1>
-        <button className="btn btn-primary" onClick={() => { setEditingCourse(null); setForm({ title: '', short_description: '', full_description: '', image_url: '', tags: '', visibility: 'public', access: 'free', price: 0, published: false }); setShowForm(true); }}>
-          <Plus size={18} /> New Course
-        </button>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button className="btn btn-info" onClick={() => navigate('/instructor/messages')}>
+            <MessageSquare size={18} /> Messages
+          </button>
+          <button className="btn btn-primary" onClick={() => { setEditingCourse(null); setForm({ title: '', short_description: '', full_description: '', image_url: '', tags: '', visibility: 'public', access: 'free', price: 0, published: false }); setShowForm(true); }}>
+            <Plus size={18} /> New Course
+          </button>
+        </div>
       </div>
 
       <div className="dashboard-grid mb-6">

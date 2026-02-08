@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Course Toggle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .course {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .course.active {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        .course.inactive {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+        .btn-toggle {
+            background-color: #2196f3;
+            color: white;
+        }
+        .btn-refresh {
+            background-color: #4caf50;
+            color: white;
+        }
+        .status {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .status.active {
+            background-color: #4caf50;
+            color: white;
+        }
+        .status.inactive {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Course Toggle Test</h1>
+    <p>This page tests the course activate/deactivate functionality.</p>
+    
+    <button class="btn-refresh" onclick="loadCourses()">🔄 Refresh Courses</button>
+    
+    <div id="courses"></div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        
+        async function loadCourses() {
+            try {
+                const response = await fetch(`${API_BASE}/api/instructor/courses`, {
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    document.getElementById('courses').innerHTML = 
+                        '<p style="color: red;">❌ Failed to load courses. Please login first at http://localhost:5000</p>';
+                    return;
+                }
+                
+                const data = await response.json();
+                const courses = data.courses || [];
+                
+                if (courses.length === 0) {
+                    document.getElementById('courses').innerHTML = '<p>No courses found.</p>';
+                    return;
+                }
+                
+                let html = '<h2>Your Courses:</h2>';
+                courses.forEach(course => {
+                    const statusClass = course.published ? 'active' : 'inactive';
+                    const statusText = course.published ? 'Active' : 'Inactive';
+                    const buttonText = course.published ? '👁️‍🗨️ Deactivate' : '👁️ Activate';
+                    
+                    html += `
+                        <div class="course ${statusClass}">
+                            <h3>${course.title}</h3>
+                            <p>${course.short_description || 'No description'}</p>
+                            <p>
+                                <span class="status ${statusClass}">${statusText}</span>
+                                <button class="btn-toggle" onclick="toggleCourse(${course.id}, ${course.published})">
+                                    ${buttonText}
+                                </button>
+                            </p>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('courses').innerHTML = html;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('courses').innerHTML = 
+                    '<p style="color: red;">❌ Error loading courses: ' + error.message + '</p>';
+            }
+        }
+        
+        async function toggleCourse(courseId, currentStatus) {
+            try {
+                console.log(`Toggling course ${courseId} from ${currentStatus} to ${!currentStatus}`);
+                
+                const response = await fetch(`${API_BASE}/api/instructor/courses/${courseId}/toggle`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ published: !currentStatus })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Toggle success:', data.message);
+                    alert('✅ ' + data.message);
+                    // Reload courses
+                    await loadCourses();
+                } else {
+                    const error = await response.json();
+                    console.error('❌ Toggle failed:', error);
+                    alert('❌ Failed: ' + (error.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error: ' + error.message);
+            }
+        }
+        
+        // Load courses on page load
+        loadCourses();
+    </script>
+</body>
+</html>

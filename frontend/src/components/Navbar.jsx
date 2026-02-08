@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Sun, Moon, BookOpen, LogOut, User, Layout, Shield } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
+import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
@@ -36,12 +37,42 @@ export default function Navbar() {
         </Link>
 
         <div className="navbar-center">
-          <NavLink to="/courses" className={({ isActive }) => isActive ? 'active' : ''}>
-            Courses
-          </NavLink>
+          {user?.role === 'learner' && (
+            <>
+              <NavLink to="/home" className={({ isActive }) => isActive ? 'active' : ''}>
+                Home
+              </NavLink>
+              <NavLink to="/courses" className={({ isActive }) => isActive ? 'active' : ''}>
+                Browse Courses
+              </NavLink>
+              <NavLink to="/my-courses" className={({ isActive }) => isActive ? 'active' : ''}>
+                My Courses
+              </NavLink>
+              <NavLink to="/achievements" className={({ isActive }) => isActive ? 'active' : ''}>
+                🏆 Achievements
+              </NavLink>
+            </>
+          )}
+          {user?.role === 'instructor' && (
+            <NavLink to="/instructor" className={({ isActive }) => isActive ? 'active' : ''}>
+              Course Plans
+            </NavLink>
+          )}
+          {user?.role === 'admin' && (
+            <NavLink to="/admin" className={({ isActive }) => isActive ? 'active' : ''}>
+              Admin Panel
+            </NavLink>
+          )}
+          {!user && (
+            <NavLink to="/courses" className={({ isActive }) => isActive ? 'active' : ''}>
+              Courses
+            </NavLink>
+          )}
         </div>
 
         <div className="navbar-right">
+          {user && <NotificationBell />}
+          
           <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
@@ -59,17 +90,24 @@ export default function Navbar() {
                     <span className="badge badge-info" style={{ marginTop: 4, display: 'inline-block' }}>{user.role}</span>
                   </div>
                   <div className="dropdown-divider" />
-                  <Link to="/my-courses" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
-                    <BookOpen size={16} /> My Courses
-                  </Link>
-                  {(user.role === 'instructor' || user.role === 'admin') && (
-                    <Link to="/instructor" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
-                      <Layout size={16} /> Instructor Dashboard
-                    </Link>
-                  )}
-                  {user.role === 'admin' && (
-                    <Link to="/admin" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
-                      <Shield size={16} /> Admin Panel
+                  {user.role === 'admin' ? (
+                    <>
+                      <Link to="/admin" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                        <Shield size={16} /> Admin Panel
+                      </Link>
+                    </>
+                  ) : user.role === 'instructor' ? (
+                    <>
+                      <Link to="/my-courses" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                        <BookOpen size={16} /> My Courses
+                      </Link>
+                      <Link to="/instructor" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                        <Layout size={16} /> Instructor Dashboard
+                      </Link>
+                    </>
+                  ) : (
+                    <Link to="/my-courses" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                      <BookOpen size={16} /> My Courses
                     </Link>
                   )}
                   <div className="dropdown-divider" />
